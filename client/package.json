@@ -10,15 +10,9 @@
     "benco:preview": "vite preview"
   },
   "dependencies": {
-    "@preline/dropdown": "^2.0.2",
-    "@preline/overlay": "^2.0.2",
-    "@preline/pin-input": "^2.0.2",
-    "@preline/remove-element": "^2.0.2",
-    "@preline/toggle-password": "^2.0.2",
     "autoprefixer": "^10.4.18",
     "axios": "^1.6.7",
     "postcss": "^8.4.35",
-    "preline": "^2.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",

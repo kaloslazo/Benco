@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { Request, Response } from 'express';
 import { createReadStream, existsSync, mkdirSync, writeFileSync } from 'fs';
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BookEntity } from './entities/book.entity';
@@ -14,14 +14,14 @@ export class BooksService {
 
   uploadBook = async (file: Express.Multer.File, bookData: BookUploadDto, cover: Express.Multer.File | null, req: Request) => {
     const userId = req.user.id;
-    if (!userId) throw new Error('User not found');
+    if (!userId) throw new NotFoundException('User not found');
 
     const userDir = `public/uploads/${userId}`;
     if (!existsSync(userDir)) mkdirSync(userDir);
 
     try {
       const normalizedFilename = normalizeFilename(file.originalname);
-      const bookFilePath = uniquePath(`${userDir}/${normalizedFilename}`);
+      const bookFilePath = await uniquePath(`${userDir}/${normalizedFilename}`);
 
       let coverPath = null;
       if (cover) {
@@ -46,6 +46,8 @@ export class BooksService {
       return { message: 'File uploaded', path: bookFilePath };
     } catch (error) {
       console.log(error);
+      // postgresql unique constraint violation
+      if (error.code === '23505') throw new ConflictException('A book with the same data already exists.');
       throw new Error('Error uploading file');
     }
   };

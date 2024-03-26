@@ -6,3 +6,7 @@ export * from './sucess/Success.component';
 export * from './viewer/Viewer.component';
 export * from './input/Input.component';
 export * from './button/Button.component';
+export * from './navbar/Navbar.component';
+export * from './toggle-theme/ToggleTheme.component';
+export * from './dropdown/Dropdown.component';
+export * from './alert/Alert.component';

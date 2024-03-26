@@ -1,71 +1,65 @@
-import { useAuth } from '@/providers/Auth.provider';
 import { IconType } from 'react-icons/lib';
-import { TbLayoutGrid, TbBook2, TbBooks, TbFileUpload, TbSettings, TbUserCircle, TbLogout, TbSun, TbMoon } from 'react-icons/tb';
+import { TbLayoutGrid, TbBook2, TbSettings, TbUserCircle, TbInfoCircle, TbHelp, TbBooks, TbUpload } from 'react-icons/tb';
 import { NavLink } from 'react-router-dom';
 
-interface SidebarLinksInterface {
+interface SidebarSectionInterface {
+  title: string;
+  links: SidebarLinkInterface[];
+}
+
+interface SidebarLinkInterface {
   name: string;
   icon: IconType;
   path: string;
 }
 
 export const SidebarComponent = () => {
-  const { authLogout } = useAuth();
-
-  const sidebarLinksMiddle: SidebarLinksInterface[] = [
-    { name: 'Dashboard', icon: TbLayoutGrid, path: '/panel' },
-    { name: 'Books', icon: TbBook2, path: '/books' },
-    { name: 'Collections', icon: TbBooks, path: '/collections' },
-    { name: 'Upload', icon: TbFileUpload, path: '/upload' },
-    { name: 'Settings', icon: TbSettings, path: '/settings' },
-    { name: 'Profile', icon: TbUserCircle, path: '/profile' },
+  const sidebarSections: SidebarSectionInterface[] = [
+    {
+      title: 'General',
+      links: [
+        { name: 'Panel', icon: TbLayoutGrid, path: '/panel' },
+        { name: 'Upload', icon: TbUpload, path: '/upload' },
+        { name: 'Books', icon: TbBook2, path: '/books' },
+        { name: 'Collections', icon: TbBooks, path: '/collections' },
+      ],
+    },
+    {
+      title: 'Tweaks',
+      links: [
+        { name: 'Settings', icon: TbSettings, path: '/settings' },
+        { name: 'Profile', icon: TbUserCircle, path: '/profile' },
+      ],
+    },
+    {
+      title: 'Support',
+      links: [
+        { name: 'About', icon: TbInfoCircle, path: 'https://github.com/kaloslazo/Benco/tree/main' },
+        { name: 'Support', icon: TbHelp, path: 'https://github.com/kaloslazo/Benco/tree/main' },
+      ],
+    },
   ];
 
-  const handleLogout = async () => {
-    await authLogout();
-    console.log('Logout successfully.');
-  };
-
   return (
-    <aside className='sticky inset-x-0 top-0 flex flex-col items-start justify-between h-full min-h-screen gap-8 py-8 bg-white border-r w-52 dark:bg-slate-900 border-slate-300 dark:border-slate-700'>
+    <aside className='sticky inset-x-0 top-0 flex flex-col items-start justify-start w-64 h-full min-h-screen gap-8 bg-white border-r dark:bg-slate-900 border-slate-300 dark:border-slate-700'>
       {/* Header */}
-      <div className='inline-flex items-center gap-2 px-4'>
-        <h3 className='text-2xl font-semibold'>Benco</h3>
+      <div className='inline-flex items-end gap-2 px-6 pt-4 h-14'>
+        <img src='/images/bencoLogo.png' alt='benco logo' className='w-10' />
+        <h3 className='text-2xl font-bold underline decoration-wavy decoration-indigo-800/50'>Benco</h3>
       </div>
       {/* Body */}
-      <div className='flex flex-col w-full gap-4 px-4'>
-        {sidebarLinksMiddle.map((eachLink) => {
-          const IconSidebar = eachLink.icon;
-          return (
-            <NavLink to={eachLink.path} key={eachLink.path} className={({ isActive }) => `transition-colors delay-75 inline-flex items-center gap-2 px-2 rounded-md py-2 hover:text-teal-600 dark:text-slate-200 dark:hover:text-teal-500 ${isActive ? 'bg-slate-100 dark:bg-slate-800 dark:text-teal-500 text-teal-600' : 'text-slate-600'}`}>
-              <IconSidebar size={22} />
-              <p className='text-sm '>{eachLink.name}</p>
-            </NavLink>
-          );
-        })}
-      </div>
-      {/* Utils */}
-      <div className='flex flex-col w-full gap-4'>
-        {/* Logout */}
-        <button className='inline-flex gap-2 px-4 text-sm transition-colors delay-75 text-slate-600 dark:text-slate-200 dark:hover:text-teal-500 hover:text-teal-600' type='button' onClick={handleLogout}>
-          <TbLogout size={22} />
-          <p>Logout</p>
-        </button>
-        {/* Dark mode */}
-        <div className='w-full px-4 rounded-sm' id='selectThemeDropdown'>
-          <div className='inline-flex w-full gap-1 p-1 border rounded-md border-slate-300 dark:border-slate-700'>
-            {/* Light */}
-            <button className='inline-flex items-center justify-center w-1/2 gap-1 px-3 py-1.5 text-white bg-teal-600 rounded-md hs-dark-mode-active:bg-transparent hs-dark-mode-active:text-slate-200' data-hs-theme-click-value='default'>
-              <TbSun size={18} />
-              <span className='text-xs'>Light</span>
-            </button>
-            {/* Dark */}
-            <button type='button' className='inline-flex justify-center items-center w-1/2 gap-1 px-2 py-1.5 rounded-md text-slate-600 dark:text-white hs-dark-mode-active:bg-teal-600' data-hs-theme-click-value='dark'>
-              <TbMoon size={14} />
-              <span className='text-xs'>Dark</span>
-            </button>
+      <div className='flex flex-col w-full gap-6 px-4'>
+        {sidebarSections.map((section) => (
+          <div key={section.title} className='flex flex-col gap-2'>
+            <p className='px-2 mb-2 text-xs font-normal uppercase section-title text-slate-500'>{section.title}</p>
+            {section.links.map((eachLink) => (
+              <NavLink to={eachLink.path} className={({ isActive }) => `inline-flex items-center justify-start w-full gap-2 px-2 py-1.5 rounded-md dark:hover:bg-slate-800 dark:hover:text-indigo-400 hover:bg-indigo-50 hover:text-indigo-700 transition-colors delay-100 ease-linear ${isActive && 'bg-indigo-50 text-indigo-700 dark:text-indigo-400 dark:bg-slate-800'}`}>
+                <eachLink.icon size={18} />
+                <span className='link-name'>{eachLink.name}</span>
+              </NavLink>
+            ))}
           </div>
-        </div>
+        ))}
       </div>
     </aside>
   );

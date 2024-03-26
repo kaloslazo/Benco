@@ -34,26 +34,26 @@ export const AuthFormComponent = ({ isRegister, handleFormSubmit, nickname, setN
   };
 
   return (
-    <div className='flex flex-row w-full h-full max-h-screen min-h-screen px-8'>
+    <div className='flex flex-row w-full h-full max-h-screen min-h-screen px-8 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50'>
       {/*  Left child */}
       <div className='flex flex-col items-start justify-center w-full max-w-md gap-8 px-8 py-8 mx-auto md:w-3/4'>
         {/* Form title */}
         <div className='text-left'>
-          <h3 className='mb-4 text-4xl font-bold text-slate-900'>{currentFormData.title}</h3>
-          <p className='text-base text-slate-800'>{currentFormData.message}</p>
+          <h3 className='mb-4 text-4xl font-bold text-slate-950 dark:text-slate-50'>{currentFormData.title}</h3>
+          <p className='text-base text-slate-800 dark:text-slate-400'>{currentFormData.message}</p>
         </div>
         {/* Form body */}
         <form onSubmit={handleFormSubmit} className='grid w-full gap-y-4'>
-          <InputComponent type='text' placeholder='Nickname' value={nickname} onChangeFunc={(event: any) => setNickname(event.target.value)} />
-          <InputComponent type='password' placeholder='Password' value={password} onChangeFunc={(event: any) => setPassword(event.target.value)} />
-          {isRegister && <InputComponent type='email' placeholder='Email' value={email} onChangeFunc={(event: any) => setEmail(event.target.value)} />}
+          <InputComponent id='nickname' type='text' placeholder='Nickname' value={nickname} onChangeFunc={(event: any) => setNickname(event.target.value)} />
+          <InputComponent id='password' type='password' placeholder='Password' value={password} onChangeFunc={(event: any) => setPassword(event.target.value)} />
+          {isRegister && <InputComponent id='email' type='email' placeholder='Email' value={email} onChangeFunc={(event: any) => setEmail(event.target.value)} />}
           <ButtonComponent type='submit' label={currentFormData.btnLabel} />
         </form>
         {/* Form links */}
         <div>
-          <span className='inline-flex items-center gap-1 text-sm text-gray-800'>
+          <span className='inline-flex items-center gap-1 text-sm text-slate-800 dark:text-slate-400'>
             <p>{currentFormData.help}</p>
-            <Link className='font-medium text-indigo-600 hover:underline hover:decoration-wavy' to={currentFormData.link}>
+            <Link className='font-medium text-indigo-600 dark:text-indigo-500 hover:underline hover:decoration-wavy' to={currentFormData.link}>
               {currentFormData.contrary}
             </Link>
           </span>

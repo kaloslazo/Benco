@@ -60,7 +60,19 @@ export class BooksService {
         where: { user: { id: request.user.id } },
         relations: ['user'],
       });
-      return userBooks;
+
+      // Serve the cover image
+      const booksWithCover = await (
+        await userBooks
+      ).map((book) => {
+        if (book.cover) {
+          const basePath = book.cover.startsWith('public') ? book.cover.slice('public'.length) : book.cover;
+          book.cover = `${request.protocol}://${request.get('host')}${basePath}`;
+        }
+        return book;
+      });
+
+      return booksWithCover;
     } catch (error) {
       console.log(error);
       throw new Error('Error getting books');

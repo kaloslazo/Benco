@@ -27,7 +27,7 @@ export const RegisterPage = () => {
       if (nickname === '' || password === '' || email === '') return;
       await register(nickname, email, password);
       navigate('/login');
-    } catch (error) {
+    } catch (error: any) {
       handleRegisterError(error);
     }
   };

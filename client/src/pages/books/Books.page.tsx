@@ -28,13 +28,13 @@ export const BooksPage = () => {
   return (
     <PanelLayout>
       {/* Header */}
-      <div className='pb-12'>
+      <div className='pb-8'>
         <h3 className='text-2xl font-semibold text-black dark:text-white'>Books</h3>
-        <p className='dark:text-slate-300 text-slate-700'>List of books available in the library</p>
+        <p className='dark:text-slate-400 text-slate-600'>List of books available in the library</p>
       </div>
       {loading && <LoadingComponent />}
       {!loading && (
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
+        <div className='grid items-stretch grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
           {books.map((book: any) => (
             <BookCardComponent key={book.id} book={book} />
           ))}

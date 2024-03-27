@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { uploadNewBook } from '@/api/books/book.api'; // Asegúrate de que la ruta es correcta
 import { PanelLayout } from '@/layouts';
 import { useErrorHandler } from '@/hooks';
-import { ErrorComponent, SuccessComponent } from '@/components';
+import { ButtonComponent, DragDropComponent, ErrorComponent, InputComponent, SuccessComponent } from '@/components';
 
 export const UploadPage = () => {
   const navigate = useNavigate();
@@ -19,22 +19,35 @@ export const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [fileSize, setFileSize] = useState('0');
   const [cover, setCover] = useState<File | null>(null);
+  const [coverSize, setCoverSize] = useState('0');
 
-  const handleFileChange = (event: any) => {
+  const handleRemoveFile = (isCover: boolean) => {
+    if (isCover) setCover(null);
+    else setFile(null);
+  };
+
+  const handleFileChange = (event: any, isCover: boolean) => {
     const file = event.target.files[0];
     const fileSizeConverted: string = (file.size / 1000000).toFixed(2);
 
-    if (file) {
+    if (file && !isCover) {
       setFile(file);
       setFileSize(fileSizeConverted);
     }
+
+    if (file && isCover) {
+      setCover(file);
+      setCoverSize(fileSizeConverted);
+    }
   };
 
-  const handleDrop = (event: any) => {
+  const handleDrop = (event: any, isCover: boolean) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
 
-    if (file) setFile(file);
+    if (file && !isCover) setFile(file);
+
+    if (file && isCover) setCover(file);
   };
 
   const handleUploadBook = async (e: any) => {
@@ -42,12 +55,18 @@ export const UploadPage = () => {
     handleUploadError('');
     setSuccessMessage('');
 
+    console.log('uploading', title, description, author, file, cover);
+
     const formData = new FormData();
     formData.append('file', file!);
     formData.append('title', title);
     formData.append('description', description);
     formData.append('author', author);
     formData.append('cover', cover!);
+
+    for (const pair of formData.entries()) {
+      console.log(pair[0] + ' - ' + pair[1]);
+    }
 
     try {
       await uploadNewBook(formData);
@@ -76,7 +95,7 @@ export const UploadPage = () => {
             <label className='inline-block text-sm text-slate-800 mt-2.5 dark:text-slate-200'>Title</label>
           </div>
           <div className='sm:col-span-9'>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} id='title' type='text' className='block w-full px-3 py-2 text-sm rounded-lg shadow-sm border-slate-200 pe-11 focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300 dark:focus:ring-slate-600' placeholder='Title' />
+            <InputComponent value={title} onChangeFunc={(e: any) => setTitle(e.target.value)} id='title' type='text' placeholder='Title' />
           </div>
 
           {/* Author */}
@@ -84,7 +103,7 @@ export const UploadPage = () => {
             <label className='inline-block text-sm text-slate-800 mt-2.5 dark:text-slate-200'>Author</label>
           </div>
           <div className='sm:col-span-9'>
-            <input value={author} onChange={(e) => setAuthor(e.target.value)} id='author' type='text' className='block w-full px-3 py-2 text-sm rounded-lg shadow-sm border-slate-200 pe-11 focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300 dark:focus:ring-slate-600' placeholder='Author' />
+            <InputComponent value={author} onChangeFunc={(e: any) => setAuthor(e.target.value)} id='author' type='text' placeholder='Author' />
           </div>
 
           {/* Description */}
@@ -104,6 +123,15 @@ export const UploadPage = () => {
             />
           </div>
 
+          {/* Image File */}
+          <div className='sm:col-span-3'>
+            <label className='inline-block text-sm text-slate-800 mt-2.5 dark:text-slate-200'>Cover Image</label>
+          </div>
+
+          <div className='sm:col-span-9'>
+            <DragDropComponent acceptFile='.png, .jpg' isCover={true} file={cover} fileSize={coverSize} fileRestriction='PNG & JPG' handleFileChange={handleFileChange} handleRemoveFile={handleRemoveFile} handleDrop={handleDrop} />
+          </div>
+
           {/* Book File */}
           <div className='sm:col-span-3'>
             <label className='inline-block text-sm text-slate-800 mt-2.5 dark:text-slate-200'>Book File</label>
@@ -111,44 +139,13 @@ export const UploadPage = () => {
           </div>
 
           <div className='sm:col-span-9'>
-            {file ? (
-              <div className='inline-flex p-2.5 items-start justify-between w-full gap-2 text-center border-2 rounded-lg border-slate-200 group dark:border-slate-700'>
-                <div className='inline-flex gap-4'>
-                  <div className='flex items-center justify-center w-10 h-10 bg-indigo-600 rounded-md'>
-                    <BsFilePdfFill className='text-white' size={24} />
-                  </div>
-                  <span className='inline-flex gap-2 text-sm text-slate-700 dark:text-slate-200'>
-                    <div className='flex flex-col items-start gap-2'>
-                      <p className='font-normal text-slate-700 text-md'>{file?.name}</p>
-                      <p className='text-xs text-slate-500'>{fileSize} Mb</p>
-                    </div>
-                  </span>
-                </div>
-                <button onClick={() => setFile(null)} className='text-red-500'>
-                  <TbX size={24} />
-                </button>
-              </div>
-            ) : (
-              <label htmlFor='af-submit-app-upload-images' className='block p-4 text-center border-2 border-dashed rounded-lg cursor-pointer border-slate-300 group sm:p-7 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 dark:border-slate-700' onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
-                <input id='af-submit-app-upload-images' name='af-submit-app-upload-images' type='file' className='sr-only' onChange={handleFileChange} accept='.pdf' />
-                <TbUpload className='mx-auto text-slate-300 size-10 dark:text-slate-700' size={20} />
-                <span className='block mt-2 text-sm text-slate-800 dark:text-slate-200'>
-                  Browse your device or <span className='text-indigo-600 group-hover:text-indigo-700'>drag & drop your file</span>
-                </span>
-                <span className='block mt-1 text-xs text-slate-500 '>Only PDF files are allowed</span>
-              </label>
-            )}
+            <DragDropComponent acceptFile='.pdf' isCover={false} file={file} fileSize={fileSize} fileRestriction='PDF' handleFileChange={handleFileChange} handleRemoveFile={handleRemoveFile} handleDrop={handleDrop} />
           </div>
         </div>
 
         {/* Buttons */}
         <div className='flex justify-end mt-6 gap-x-2'>
-          <button type='button' className='inline-flex items-center px-4 py-2 text-sm font-medium bg-white border rounded-lg shadow-sm text-slate-800 border-slate-200 gap-x-2 hover:bg-slate-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:hover:bg-slate-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-slate-600'>
-            Cancel
-          </button>
-          <button type='submit' className='inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-indigo-600 border border-transparent rounded-lg gap-x-2 hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-slate-600'>
-            Save changes
-          </button>
+          <ButtonComponent type='submit' label='Upload Book' />
         </div>
 
         {/* Error */}

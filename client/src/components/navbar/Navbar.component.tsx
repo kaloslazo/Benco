@@ -32,7 +32,7 @@ export const NavbarComponent = () => {
         </a>
         <TbNotification className={twClassLayout} />
         <ToggleThemeComponent className={twClassLayout} />
-        <DropdownComponent imagePath={'https://www.w3schools.com/howto/img_avatar.png'} className={twClassLayout} options={optionsDropdown} />
+        <DropdownComponent imagePath={'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'} className={twClassLayout} options={optionsDropdown} />
       </div>
     </nav>
   );

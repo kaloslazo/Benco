@@ -10,3 +10,4 @@ export * from './navbar/Navbar.component';
 export * from './toggle-theme/ToggleTheme.component';
 export * from './dropdown/Dropdown.component';
 export * from './alert/Alert.component';
+export * from './drag-drop/DragDrop.component';

@@ -2,12 +2,13 @@ import { Link } from 'react-router-dom';
 
 export const BookCardComponent = ({ book }: { book: any }) => {
   return (
-    <Link key={book.id} to={`/book/${book.id}`} className='relative block overflow-hidden transition duration-300 ease-in-out transform border rounded-lg shadow-lg border-slate-300 dark:border-slate-800 group h-80 hover:scale-105'>
-      <img src={book.cover || 'https://www.hachettebookgroup.com/wp-content/uploads/2017/07/missingbook.png'} alt={book.title} className='absolute inset-0 object-cover w-full h-full transition-opacity duration-300 ease-in-out group-hover:opacity-75' />
-      <div className='absolute inset-0 transition-opacity duration-300 ease-in-out opacity-75 bg-gradient-to-b from-transparent to-gray-900 group-hover:opacity-90'></div>
-      <div className='relative flex flex-col justify-end h-full p-4'>
-        <h3 className='text-lg font-semibold text-white truncate'>{book.title}</h3>
-        <p className='text-gray-300'>{book.author || 'No Author'}</p>
+    <Link key={book.id} to={`/book/${book.id}`} className='flex flex-col items-stretch gap-4 px-2 py-2 bg-white border rounded-lg dark:border-slate-700 border-slate-300 dark:bg-slate-800'>
+      <div className='flex-grow overflow-hidden border rounded-lg border-slate-300 dark:border-slate-700 h-60'>
+        <img src={book.cover || 'https://www.hachettebookgroup.com/wp-content/uploads/2017/07/missingbook.png'} alt={book.title} className='object-cover w-full h-full transition-transform delay-100 hover:scale-110' />
+      </div>
+      <div>
+        <h3 className='h-12 mb-2 text-base font-semibold transition-colors ease-in-out delay-100 text-slate-900 dark:text-slate-100 line-clamp-2 hover:text-indigo-600 dark:hover:text-indigo-400'>{book.title}</h3>
+        <p className='text-xs truncate text-slate-600 dark:text-slate-400 line-clamp-1'>{book.author || 'No Author'}</p>
       </div>
     </Link>
   );

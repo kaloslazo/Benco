@@ -1,8 +1,8 @@
 interface InputComponentPropsInterface {
   type: string;
-  placeholder: string;
+  placeholder?: string;
   id: string;
-  value?: string;
+  value?: string | number;
   classNameCustom?: string | null;
   onChangeFunc?: (e?: any) => any;
 }
